@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, RootState } from "../store";
-import authService from "../../services/api/auth-service";
-import storageService from "../../services/storage/storage-service";
 import { ILoginParams } from "../../interfaces/auth-interfaces";
+import { axiosInstance } from "../../core/axios";
 
 interface SignInResponse {
   login: string;
@@ -54,10 +53,10 @@ export const signIn = (params: ILoginParams): AppThunk => async (
   dispatch
 ) => {
   dispatch(signInRequest());
+  const createLoginUrl = 'https://api';
   try {
-    const res = await authService.login(params);
+    const res = await axiosInstance.post(createLoginUrl);
     dispatch(signInSuccess(res.data));
-    storageService.setItem("token", res.data.token);
   } catch (error) {
     dispatch(signInFailure(error.message));
   }
